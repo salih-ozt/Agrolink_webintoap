@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agrolink - Tarım Sosyal Platformu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <svg width="120" height="120" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="50" fill="#2d5016" opacity="0.8"/>
+                    <path d="M60 30 L75 50 L90 30 L85 55 L100 60 L85 65 L90 90 L75 70 L60 90 L65 65 L50 60 L65 55 Z" fill="#ffffff"/>
+                    <circle cx="60" cy="60" r="45" fill="none" stroke="#ffffff" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="splash-title">Agrolink</div>
+            <div class="splash-subtitle">Tarımın Sosyal Platformu</div>
+            <div class="splash-loader">
+                <div class="splash-dot"></div>
+                <div class="splash-dot"></div>
+                <div class="splash-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Auth Screen -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-logo">
+            <div class="logo-icon">🌾</div>
+            <div class="logo-text">Agrolink</div>
+        </div>
+        
+        <div class="auth-tabs">
+            <button class="auth-tab active" data-tab="login">Giriş Yap</button>
+            <button class="auth-tab" data-tab="register">Kayıt Ol</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form active">
+            <div class="form-group">
+                <input type="email" id="loginEmail" class="form-input" placeholder="E-posta" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="loginPassword" class="form-input" placeholder="Şifre" required>
+            </div>
+            <div class="form-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="rememberMe">
+                    <span class="checkmark"></span>
+                    Beni hatırla
+                </label>
+                <a href="#" class="forgot-password">Şifremi unuttum</a>
+            </div>
+            <button type="submit" class="submit-btn">
+                <span class="btn-text">Giriş Yap</span>
+                <div class="btn-loader" style="display: none;"></div>
+            </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="auth-form">
+            <div class="form-steps">
+                <div class="step active" data-step="1">1. Temel Bilgiler</div>
+                <div class="step" data-step="2">2. Telefon Doğrulama</div>
+                <div class="step" data-step="3">3. Profil</div>
+            </div>
+
+            <!-- Step 1: Basic Info -->
+            <div class="form-step active" data-step="1">
+                <div class="form-group">
+                    <input type="text" id="registerName" class="form-input" placeholder="Ad Soyad" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="registerEmail" class="form-input" placeholder="E-posta" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="registerPhone" class="form-input" placeholder="Telefon (+90 XXX XXX XX XX)" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="registerPassword" class="form-input" placeholder="Şifre (min 8 karakter)" required minlength="8">
+                </div>
+                <div class="form-group">
+                    <select id="accountType" class="form-input" required>
+                        <option value="">Hesap Türü Seçin</option>
+                        <option value="farmer">👨‍🌾 Çiftçi</option>
+                        <option value="producer">🏭 Üretici</option>
+                        <option value="distributor">🚜 Distribütör</option>
+                        <option value="expert">🔬 Uzman</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="privacyPolicy" required>
+                        <span class="checkmark"></span>
+                        <span class="checkbox-text">
+                            <a href="#" class="privacy-link">Gizlilik Politikası</a> ve 
+                            <a href="#" class="terms-link">Kullanım Koşulları</a>'nı okudum ve kabul ediyorum
+                        </span>
+                    </label>
+                </div>
+                <button type="button" class="submit-btn next-step" data-next="2">
+                    <span class="btn-text">Devam Et</span>
+                </button>
+            </div>
+
+            <!-- Step 2: Phone Verification -->
+            <div class="form-step" data-step="2">
+                <div class="verification-info">
+                    <div class="verification-icon">📱</div>
+                    <div class="verification-text">
+                        <strong>+90 XXX XXX XX XX</strong> numarasına doğrulama kodu gönderildi
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="verificationCode" class="form-input verification-input" placeholder="6 haneli kod" maxlength="6" required>
+                    <div class="verification-timer" id="verificationTimer">05:00</div>
+                </div>
+                <div class="verification-actions">
+                    <button type="button" class="resend-code" id="resendCode">Kodu Tekrar Gönder</button>
+                </div>
+                <div class="step-buttons">
+                    <button type="button" class="back-btn prev-step" data-prev="1">Geri</button>
+                    <button type="button" class="submit-btn next-step" data-next="3">
+                        <span class="btn-text">Doğrula ve Devam Et</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Profile Setup -->
+            <div class="form-step" data-step="3">
+                <div class="profile-photo-section">
+                    <div class="profile-photo-preview" id="profilePhotoPreview">
+                        <div class="photo-placeholder">
+                            <div class="photo-icon">📷</div>
+                            <div class="photo-text">Fotoğraf Ekle</div>
+                        </div>
+                        <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="profile-photo-actions">
+                        <button type="button" class="photo-btn" id="uploadPhotoBtn">Fotoğraf Seç</button>
+                        <button type="button" class="photo-btn secondary" id="removePhotoBtn">Kaldır</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <textarea id="profileBio" class="form-input bio-input" placeholder="Kendinizi kısaca tanıtın... (isteğe bağlı)" maxlength="150"></textarea>
+                    <div class="char-counter"><span id="bioCharCount">0</span>/150</div>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="profileLocation" class="form-input" placeholder="Konum (isteğe bağlı)">
+                </div>
+                <div class="form-group">
+                    <input type="url" id="profileWebsite" class="form-input" placeholder="Web sitesi (isteğe bağlı)">
+                </div>
+                <div class="step-buttons">
+                    <button type="button" class="back-btn prev-step" data-prev="2">Geri</button>
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Hesabı Oluştur</span>
+                        <div class="btn-loader" style="display: none;"></div>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="auth-footer">
+            <div class="divider">veya</div>
+            <div class="social-auth">
+                <button class="social-btn google-btn">
+                    <span class="social-icon">🔍</span>
+                    Google ile devam et
+                </button>
+                <button class="social-btn apple-btn">
+                    <span class="social-icon">🍎</span>
+                    Apple ile devam et
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo" id="mainLogo">
+                        <div class="logo-icon">🌾</div>
+                        <div class="logo-text">Agrolink</div>
+                    </div>
+                </div>
+                
+                <div class="header-center">
+                    <div class="search-container">
+                        <input type="text" id="globalSearch" class="search-input" placeholder="Agrolink'te ara...">
+                        <div class="search-icon">🔍</div>
+                        <div id="searchResults" class="search-results"></div>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <div class="header-actions">
+                        <button class="header-btn" id="createBtn" title="Oluştur">
+                            <span class="btn-icon">➕</span>
+                        </button>
+                        <button class="header-btn" id="liveStreamBtn" title="Canlı Yayın">
+                            <span class="btn-icon">🔴</span>
+                        </button>
+                        <button class="header-btn" id="notificationsBtn" title="Bildirimler">
+                            <span class="btn-icon">🔔</span>
+                            <span id="notificationBadge" class="notification-badge" style="display: none;"></span>
+                        </button>
+                        <button class="header-btn" id="messagesBtn" title="Mesajlar">
+                            <span class="btn-icon">💬</span>
+                            <span id="messageBadge" class="notification-badge" style="display: none;"></span>
+                        </button>
+                        <div class="user-menu" id="userMenu">
+                            <div class="user-avatar" id="headerUserAvatar">
+                                <img src="" alt="" id="headerAvatarImg" style="display: none;">
+                                <div class="avatar-placeholder" id="headerAvatarPlaceholder">U</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Bar -->
+        <nav class="bottom-nav">
+            <div class="nav-container">
+                <button class="nav-btn active" data-page="home">
+                    <div class="nav-icon">🏠</div>
+                    <span class="nav-label">Ana Sayfa</span>
+                </button>
+                <button class="nav-btn" data-page="explore">
+                    <div class="nav-icon">🔍</div>
+                    <span class="nav-label">Keşfet</span>
+                </button>
+                <button class="nav-btn" data-page="create">
+                    <div class="nav-icon create-icon">➕</div>
+                    <span class="nav-label">Oluştur</span>
+                </button>
+                <button class="nav-btn" data-page="reels">
+                    <div class="nav-icon">🎬</div>
+                    <span class="nav-label">Reels</span>
+                </button>
+                <button class="nav-btn" data-page="profile">
+                    <div class="nav-avatar" id="navUserAvatar">
+                        <img src="" alt="" id="navAvatarImg" style="display: none;">
+                        <div class="nav-avatar-placeholder" id="navAvatarPlaceholder">U</div>
+                    </div>
+                    <span class="nav-label">Profil</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Page -->
+            <div id="homePage" class="page active">
+                <div class="stories-container">
+                    <div class="stories-scroll">
+                        <div class="story-item create-story">
+                            <div class="story-avatar">
+                                <div class="add-icon">+</div>
+                            </div>
+                            <div class="story-label">Hikaye Ekle</div>
+                        </div>
+                        <!-- Stories will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="feed-container">
+                    <div class="feed-sort">
+                        <button class="sort-btn active" data-sort="following">Takip Edilenler</button>
+                        <button class="sort-btn" data-sort="popular">Popüler</button>
+                        <button class="sort-btn" data-sort="recent">En Yeni</button>
+                    </div>
+                    <div id="postsContainer" class="posts-container">
+                        <!-- Posts will be loaded here -->
+                    </div>
+                    <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                        <div class="spinner"></div>
+                        <span>Daha fazla gönderi yükleniyor...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explore Page -->
+            <div id="explorePage" class="page">
+                <div class="explore-container">
+                    <div class="explore-header">
+                        <h2>Keşfet</h2>
+                        <div class="explore-filters">
+                            <button class="filter-btn active" data-filter="all">Tümü</button>
+                            <button class="filter-btn" data-filter="trending">Popüler</button>
+                            <button class="filter-btn" data-filter="agriculture">Tarım</button>
+                            <button class="filter-btn" data-filter="animals">Hayvancılık</button>
+                            <button class="filter-btn" data-filter="technology">Teknoloji</button>
+                        </div>
+                    </div>
+                    <div id="exploreContent" class="explore-content">
+                        <!-- Explore content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Page -->
+            <div id="createPage" class="page">
+                <div class="create-container">
+                    <div class="create-options">
+                        <div class="create-option" data-type="post">
+                            <div class="option-icon">📝</div>
+                            <div class="option-title">Gönderi</div>
+                            <div class="option-desc">Fotoğraf veya video paylaş</div>
+                        </div>
+                        <div class="create-option" data-type="story">
+                            <div class="option-icon">📖</div>
+                            <div class="option-title">Hikaye</div>
+                            <div class="option-desc">24 saat görünecek</div>
+                        </div>
+                        <div class="create-option" data-type="reel">
+                            <div class="option-icon">🎬</div>
+                            <div class="option-title">Reel</div>
+                            <div class="option-desc">Kısa video oluştur</div>
+                        </div>
+                        <div class="create-option" data-type="live">
+                            <div class="option-icon">🔴</div>
+                            <div class="option-title">Canlı Yayın</div>
+                            <div class="option-desc">Anında yayın başlat</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reels Page -->
+            <div id="reelsPage" class="page">
+                <div class="reels-container">
+                    <div class="reels-header">
+                        <h2>Reels</h2>
+                        <div class="reels-actions">
+                            <button class="reels-btn" id="createReelBtn">Reel Oluştur</button>
+                        </div>
+                    </div>
+                    <div id="reelsContent" class="reels-content">
+                        <!-- Reels will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profilePage" class="page">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-info">
+                            <div class="profile-avatar-section">
+                                <div class="profile-avatar" id="profileAvatar">
+                                    <img src="" alt="" id="profileAvatarImg" style="display: none;">
+                                    <div class="profile-avatar-placeholder" id="profileAvatarPlaceholder">U</div>
+                                    <div class="avatar-badge" id="verifiedBadge" style="display: none;">✓</div>
+                                </div>
+                                <button class="edit-avatar-btn" id="editAvatarBtn">📷</button>
+                            </div>
+                            <div class="profile-details">
+                                <div class="profile-name-section">
+                                    <h1 id="profileUserName">Kullanıcı Adı</h1>
+                                    <div class="profile-badges">
+                                        <span class="badge farmer" id="farmerBadge" style="display: none;">👨‍🌾 Çiftçi</span>
+                                        <span class="badge verified" id="profileVerifiedBadge" style="display: none;">✓ Doğrulanmış</span>
+                                    </div>
+                                </div>
+                                <div class="profile-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-count" id="postCount">0</span>
+                                        <span class="stat-label">Gönderi</span>
+                                    </div>
+                                    <div class="stat-item clickable" id="followerStat">
+                                        <span class="stat-count" id="followerCount">0</span>
+                                        <span class="stat-label">Takipçi</span>
+                                    </div>
+                                    <div class="stat-item clickable" id="followingStat">
+                                        <span class="stat-count" id="followingCount">0</span>
+                                        <span class="stat-label">Takip</span>
+                                    </div>
+                                </div>
+                                <div class="profile-bio" id="profileBioText">Bio bulunmuyor</div>
+                                <div class="profile-website" id="profileWebsiteLink" style="display: none;">
+                                    <a href="#" target="_blank" id="websiteLink">Web Sitesi</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <button class="profile-btn primary" id="editProfileBtn">Profili Düzenle</button>
+                            <button class="profile-btn secondary" id="shareProfileBtn">Paylaş</button>
+                            <button class="profile-btn icon" id="moreOptionsBtn">⋯</button>
+                        </div>
+                    </div>
+
+                    <div class="profile-tabs">
+                        <button class="profile-tab active" data-tab="posts">
+                            <span class="tab-icon">📝</span>
+                            <span class="tab-text">Gönderiler</span>
+                        </button>
+                        <button class="profile-tab" data-tab="reels">
+                            <span class="tab-icon">🎬</span>
+                            <span class="tab-text">Reels</span>
+                        </button>
+                        <button class="profile-tab" data-tab="saved">
+                            <span class="tab-icon">💾</span>
+                            <span class="tab-text">Kaydedilenler</span>
+                        </button>
+                        <button class="profile-tab" data-tab="tagged">
+                            <span class="tab-icon">📌</span>
+                            <span class="tab-text">Etiketlenenler</span>
+                        </button>
+                    </div>
+
+                    <div class="profile-content">
+                        <div id="profilePosts" class="tab-content active">
+                            <div class="posts-grid" id="userPostsGrid">
+                                <!-- User posts will be loaded here -->
+                            </div>
+                        </div>
+                        <div id="profileReels" class="tab-content">
+                            <!-- Reels will be loaded here -->
+                        </div>
+                        <div id="profileSaved" class="tab-content">
+                            <!-- Saved posts will be loaded here -->
+                        </div>
+                        <div id="profileTagged" class="tab-content">
+                            <!-- Tagged posts will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Create Post Modal -->
+    <div id="createPostModal" class="modal">
+        <div class="modal-content create-modal">
+            <div class="modal-header">
+                <h3>Yeni Gönderi Oluştur</h3>
+                <button class="close-btn" id="closeCreatePostModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="create-steps">
+                    <div class="create-step active" data-step="1">Medya Seç</div>
+                    <div class="create-step" data-step="2">Düzenle</div>
+                    <div class="create-step" data-step="3">Paylaşım</div>
+                </div>
+
+                <!-- Step 1: Media Selection -->
+                <div class="create-step-content active" data-step="1">
+                    <div class="media-upload-area" id="mediaUploadArea">
+                        <div class="upload-placeholder">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">Fotoğraf ve video yükleyin</div>
+                            <button class="upload-btn" id="selectMediaBtn">Bilgisayarınızdan seçin</button>
+                        </div>
+                        <input type="file" id="mediaInput" multiple accept="image/*,video/*" style="display: none;">
+                    </div>
+                    <div class="media-preview" id="mediaPreview" style="display: none;">
+                        <div class="preview-header">
+                            <div class="preview-title">Seçilen Medya</div>
+                            <button class="change-media-btn" id="changeMediaBtn">Değiştir</button>
+                        </div>
+                        <div class="preview-content" id="previewContent"></div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Editing -->
+                <div class="create-step-content" data-step="2">
+                    <div class="editor-container">
+                        <div class="editor-preview">
+                            <div class="preview-item active" id="editorPreview">
+                                <!-- Media preview for editing -->
+                            </div>
+                        </div>
+                        <div class="editor-tools">
+                            <div class="tool-section">
+                                <h4>Filtreler</h4>
+                                <div class="filter-grid">
+                                    <div class="filter-item active" data-filter="none">
+                                        <div class="filter-preview original"></div>
+                                        <span>Orijinal</span>
+                                    </div>
+                                    <div class="filter-item" data-filter="clarendon">
+                                        <div class="filter-preview clarendon"></div>
+                                        <span>Clarendon</span>
+                                    </div>
+                                    <div class="filter-item" data-filter="juno">
+                                        <div class="filter-preview juno"></div>
+                                        <span>Juno</span>
+                                    </div>
+                                    <!-- More filters -->
+                                </div>
+                            </div>
+                            <div class="tool-section">
+                                <h4>Düzenleme</h4>
+                                <div class="edit-options">
+                                    <button class="edit-btn" data-edit="crop">Kırp</button>
+                                    <button class="edit-btn" data-edit="rotate">Döndür</button>
+                                    <button class="edit-btn" data-edit="adjust">Ayarla</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Sharing -->
+                <div class="create-step-content" data-step="3">
+                    <div class="sharing-container">
+                        <div class="sharing-preview">
+                            <div class="preview-card">
+                                <div class="preview-header">
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            <img src="" alt="" id="previewAvatarImg" style="display: none;">
+                                            <div class="avatar-placeholder" id="previewAvatarPlaceholder">U</div>
+                                        </div>
+                                        <div class="user-name" id="previewUserName">Kullanıcı</div>
+                                    </div>
+                                </div>
+                                <div class="preview-media" id="previewMedia">
+                                    <!-- Final media preview -->
+                                </div>
+                                <div class="preview-actions">
+                                    <button class="action-btn">❤️</button>
+                                    <button class="action-btn">💬</button>
+                                    <button class="action-btn">📤</button>
+                                    <button class="action-btn">💾</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sharing-options">
+                            <div class="option-group">
+                                <label class="option-label">Açıklama</label>
+                                <textarea id="postCaption" class="caption-input" placeholder="Gönderi açıklaması yazın... #hashtag @kullanıcı"></textarea>
+                                <div class="caption-tools">
+                                    <button class="tool-btn" data-tool="gif">GIF</button>
+                                    <button class="tool-btn" data-tool="emoji">😊</button>
+                                    <button class="tool-btn" data-tool="mention">@</button>
+                                    <button class="tool-btn" data-tool="hashtag">#</button>
+                                </div>
+                            </div>
+                            <div class="option-group">
+                                <label class="option-label">Konum</label>
+                                <input type="text" id="postLocation" class="location-input" placeholder="Konum ekle">
+                                <button class="location-btn" id="detectLocationBtn">📍 Mevcut konumu kullan</button>
+                            </div>
+                            <div class="option-group">
+                                <label class="option-label">Hedef Kitle</label>
+                                <select id="postAudience" class="audience-select">
+                                    <option value="public">🌍 Herkese Açık</option>
+                                    <option value="followers">👥 Sadece Takipçiler</option>
+                                    <option value="private">🔒 Sadece Ben</option>
+                                </select>
+                            </div>
+                            <div class="option-group">
+                                <label class="checkbox-option">
+                                    <input type="checkbox" id="disableComments">
+                                    <span class="checkmark"></span>
+                                    Yorumları devre dışı bırak
+                                </label>
+                                <label class="checkbox-option">
+                                    <input type="checkbox" id="disableLikes">
+                                    <span class="checkmark"></span>
+                                    Beğenileri gizle
+                                </label>
+                            </div>
+                            <div class="option-group">
+                                <label class="checkbox-option">
+                                    <input type="checkbox" id="schedulePost">
+                                    <span class="checkmark"></span>
+                                    Zamanlayıcı ayarla
+                                </label>
+                                <div class="schedule-options" id="scheduleOptions" style="display: none;">
+                                    <input type="datetime-local" id="scheduleTime" class="schedule-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary" id="prevStepBtn" style="display: none;">Geri</button>
+                <button class="modal-btn primary" id="nextStepBtn">İleri</button>
+                <button class="modal-btn primary" id="sharePostBtn" style="display: none;">
+                    <span class="btn-text">Paylaş</span>
+                    <div class="upload-progress" id="uploadProgress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">%0</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Stream Modal -->
+    <div id="liveStreamModal" class="modal">
+        <div class="modal-content live-modal">
+            <div class="modal-header">
+                <h3>Canlı Yayın Başlat</h3>
+                <button class="close-btn" id="closeLiveModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="live-setup">
+                    <div class="live-preview">
+                        <div class="camera-preview" id="cameraPreview">
+                            <div class="preview-placeholder">
+                                <div class="preview-icon">📹</div>
+                                <div class="preview-text">Kamera önizlemesi</div>
+                            </div>
+                        </div>
+                        <div class="live-controls">
+                            <button class="control-btn" id="switchCameraBtn">🔄</button>
+                            <button class="control-btn" id="muteAudioBtn">🎤</button>
+                            <button class="control-btn" id="muteVideoBtn">📹</button>
+                        </div>
+                    </div>
+                    <div class="live-settings">
+                        <div class="setting-group">
+                            <label>Yayın Başlığı</label>
+                            <input type="text" id="liveTitle" class="setting-input" placeholder="Yayın başlığını girin">
+                        </div>
+                        <div class="setting-group">
+                            <label>Yayın Türü</label>
+                            <select id="liveType" class="setting-select">
+                                <option value="public">🌍 Herkese Açık</option>
+                                <option value="followers">👥 Sadece Takipçiler</option>
+                                <option value="private">🔒 Özel</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>Ortak Yayıncılar</label>
+                            <input type="text" id="coHosts" class="setting-input" placeholder="@kullanıcıadı şeklinde ekleyin">
+                            <div class="cohost-list" id="cohostList"></div>
+                        </div>
+                        <div class="setting-group">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="saveLive">
+                                <span class="checkmark"></span>
+                                Yayını kaydet
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary" id="testLiveBtn">Test Yayını</button>
+                <button class="modal-btn primary" id="startLiveBtn">
+                    <span class="btn-text">🔴 Yayını Başlat</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Many more modals for comments, messages, notifications, etc. -->
+    
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="modal">
+        <div class="modal-content privacy-modal">
+            <div class="modal-header">
+                <h3>Gizlilik Politikası & Kullanım Koşulları</h3>
+                <button class="close-btn" id="closePrivacyModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="privacy-content">
+                    <div class="privacy-section">
+                        <h4>Gizlilik Politikası</h4>
+                        <ol>
+                            <li>Kişisel verileriniz 6698 sayılı KVKK'ya uygun olarak işlenir</li>
+                            <li>Verileriniz sadece platform hizmetleri için kullanılır</li>
+                            <li>Üçüncü taraflarla veri paylaşımı yapılmaz</li>
+                            <!-- ... 20 maddelik gizlilik politikası -->
+                        </ol>
+                    </div>
+                    <div class="privacy-section">
+                        <h4>Kullanım Koşulları</h4>
+                        <ol>
+                            <li>Platformu yasalara uygun şekilde kullanmayı kabul edersiniz</li>
+                            <li>Telif hakkı ihlali yapmamayı taahhüt edersiniz</li>
+                            <!-- ... 20 maddelik kullanım koşulları -->
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn primary" id="acceptPrivacyBtn">Kabul Ediyorum</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
